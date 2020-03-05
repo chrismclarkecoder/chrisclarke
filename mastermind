@@ -1,0 +1,161 @@
+using System;
+using System.Linq;
+
+namespace Quadex
+{
+    class MainClass
+    {
+        //Passmaker method returns a random 4 digit answer with all digits 1 through 6
+        static string Passmaker()
+        {
+            int p1 = new Random().Next(1, 7);
+            int p2 = new Random().Next(1, 7);
+            int p3 = new Random().Next(1, 7);
+            int p4 = new Random().Next(1, 7);
+
+            string answer = p1.ToString() + p2.ToString() + p3.ToString() + p4.ToString();
+
+            return answer;
+        }
+
+        //Intro method is called once on startup of application to prompt user with rules
+        static void Intro()
+        {
+            Console.WriteLine("Welcome to Mastermind.");
+            Console.WriteLine("Try to break the code!");
+            Console.WriteLine("Rules: ");
+            Console.WriteLine("     1. The code is made up of only numbers between 1-6.");
+            Console.WriteLine("     2. The code is only 4 digits in length.");
+            Console.WriteLine("     3. If the digit is both correct and in the right position, you will be ");
+            Console.WriteLine("        shown a + (plus sign).");
+            Console.WriteLine("     4. If the digit is correct but in the wrong position, you will be shown ");
+            Console.WriteLine("        a - (minus sign).");
+            Console.WriteLine("     5. If the digit is incorrect, you will be shown nothing in that position.");
+            Console.WriteLine("     6. You only get 10 guesses.");
+            Console.WriteLine("Good Luck!");
+            Console.WriteLine(" ");
+            Console.WriteLine(" ");
+        }
+
+        //End game. lets user know whether they won or lost.
+        static void Results(bool correct)
+        {
+            switch (correct)
+            {
+                case (true):
+                    Console.WriteLine("Congratulations. You guessed the answer!");
+                    break;
+
+                case (false):
+                    Console.WriteLine("You couldn't guess in 10 tries. Maybe next time!");
+                    break;
+            }
+        }
+
+        //Evaluate the user's guess and generate the feedback message accordingly
+        static string UserFeedback(string guess, string answer)
+        {
+            string feedback = "";
+
+
+            int i;
+            for (i = 0; i < 4; i++)
+            {
+                char guessChar = guess[i];
+                char answerChar = answer[i];
+
+                if (answer.Contains(guessChar))
+                {
+                    if (guessChar == answerChar)
+                    {
+                        feedback += "+";
+                    }
+                    else
+                    {
+                        feedback += "-";
+                    }
+                }
+                else
+                {
+                    feedback += " ";
+                }
+            }
+            return feedback;
+        }
+
+
+
+
+        public static void Main(string[] args)
+        {
+            while (true)
+            {
+                //generate answer
+                string answer = Passmaker();
+
+                //Print the introductory statements so the user can read how the game works
+                Intro();
+
+                //Sets a bool variable to be used in the Results method to determine win or loss message. Also used to 
+                bool correct = false;
+                int tries = 0;
+
+                //begins game
+                while (tries < 11)
+                {
+                    //Prompt user for their guess
+                    Console.Write("Input your guess here: ");
+                    //Console.WriteLine();
+                    //Console.WriteLine(answer);
+                    string guess = Console.ReadLine();
+
+                    //Let user know that their answer was in the wrong format, does not count as a try
+                    if (guess.Length != 4)
+                    {
+                        continue;
+                    }
+
+                    //if user guessed correctly, exit game loop. If not, provide their feedback and continue.
+                    if (guess == answer)
+                    {
+                        correct = true;
+                        break;
+                    }
+                    else
+                    {
+                        tries = tries + 1;
+                        Console.WriteLine(UserFeedback(guess, answer));
+
+                        //break if user exceeds max tries
+                        if (tries == 10)
+                        {
+                            break;
+                        }
+
+                    }
+
+                }
+
+                //Calls Results method to tell the user they won or lost
+                Results(correct);
+
+                if (correct == false)
+                {
+                    Console.WriteLine("The answer was " + answer);
+                }
+
+                //asks if user wants to end or play again
+                Console.WriteLine("Enter p to play again or anything else to end session.");
+                string next = Console.ReadLine();
+                if (next == "p")
+                {
+                    continue;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+    }
+}
